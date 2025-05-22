@@ -32,7 +32,7 @@ export default function ProductsGrid({ products }: ProductGridProps) {
     createSocket();
 
     return () => {
-      socket.disconnect();
+      socket?.disconnect();
     };
   }, []);
 
