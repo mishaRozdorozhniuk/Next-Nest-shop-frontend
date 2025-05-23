@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
@@ -7,7 +7,8 @@ import deleteProduct from '../actions/delete-product';
 export default function DeleteProduct({ productId }: { productId: number }) {
   const router = useRouter();
 
-  const handleDeleteProduct = async () => {
+  const handleDeleteProduct = async e => {
+    e.stopPropagation();
     try {
       const response = await deleteProduct(productId);
 
@@ -25,7 +26,7 @@ export default function DeleteProduct({ productId }: { productId: number }) {
   return (
     <button
       className='px-4 py-2 mt-3 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors'
-      onClick={handleDeleteProduct}
+      onClick={e => handleDeleteProduct(e)}
     >
       Delete
     </button>

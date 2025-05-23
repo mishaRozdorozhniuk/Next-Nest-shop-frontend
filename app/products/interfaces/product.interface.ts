@@ -4,6 +4,7 @@ export default interface Product {
   description: string;
   price: number;
   imageExists: boolean;
+  imageExtension: string;
 }
 
 export default interface IProduct {
@@ -12,4 +13,5 @@ export default interface IProduct {
   description: string;
   price: number;
   imageExists: boolean;
+  imageExtension: string;
 }

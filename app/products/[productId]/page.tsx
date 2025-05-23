@@ -11,7 +11,6 @@ interface SingleProductProps {
 }
 
 export default async function SingleProduct({ params }: SingleProductProps) {
-  console.log(params, params.productId);
   const product = await getProduct(params.productId);
 
   return (
@@ -22,7 +21,7 @@ export default async function SingleProduct({ params }: SingleProductProps) {
       {product.imageExists && (
         <Stack spacing={2} sx={{ alignItems: 'center', textAlign: 'center' }}>
           <Image
-            src={getProductImage(product.id)}
+            src={getProductImage(product.id, product.imageExtension)}
             alt={`Picture of ${product.name}`}
             width={400}
             height={400}

@@ -147,6 +147,7 @@ export default function Header({ logout }: HeaderProps) {
 
 const Settings = ({ logout }: HeaderProps) => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const router = useRouter();
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -155,6 +156,11 @@ const Settings = ({ logout }: HeaderProps) => {
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
+
+  const handleGoToCart = () => {
+    router.push('/cart');
+    handleCloseUserMenu();
+  }
 
   return (
     <Box sx={{ flexGrow: 0 }}>
@@ -187,6 +193,12 @@ const Settings = ({ logout }: HeaderProps) => {
           }}
         >
           <Typography sx={{ textAlign: 'center' }}>Logout</Typography>
+        </MenuItem>
+        <MenuItem
+          key={'cart'}
+          onClick={handleGoToCart}
+        >
+          <Typography sx={{ textAlign: 'center' }}>Cart</Typography>
         </MenuItem>
       </Menu>
     </Box>
