@@ -5,13 +5,14 @@ import { getProductImage } from '../product-image';
 import Checkout from '@/app/checkout/checkout';
 
 interface SingleProductProps {
-  params: {
+  params: Promise<{
     productId: string;
-  };
+  }>;
 }
 
 export default async function SingleProduct({ params }: SingleProductProps) {
-  const product = await getProduct(params.productId);
+  const resolvedParams = await params;
+  const product = await getProduct(resolvedParams.productId);
 
   return (
     <Stack spacing={4} sx={{ marginBottom: '2rem', alignItems: 'center' }}>

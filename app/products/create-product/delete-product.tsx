@@ -7,7 +7,7 @@ import deleteProduct from '../actions/delete-product';
 export default function DeleteProduct({ productId }: { productId: number }) {
   const router = useRouter();
 
-  const handleDeleteProduct = async e => {
+  const handleDeleteProduct = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
     try {
       const response = await deleteProduct(productId);

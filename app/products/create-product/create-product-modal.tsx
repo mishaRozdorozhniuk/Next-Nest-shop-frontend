@@ -12,10 +12,10 @@ const styles: CSSProperties = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: 'background.paper',
+  backgroundColor: 'background.paper',
   border: '2px solid #000',
   boxShadow: '0px 4px 24px rgba(0, 0, 0, 0.2)',
-  p: 4,
+  padding: '32px',
 };
 
 const styleInputStyles: CSSProperties = {

@@ -8,6 +8,7 @@ export interface CartProductItem {
   price: number;
   imageUrl?: string;
   imageExists?: boolean;
+  imageExtension?: string;
 }
 
 interface CartStoreState {
