@@ -6,6 +6,7 @@ import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 // import Image from 'next/image';
 // import { getProductImage } from '../products/product-image';
 import CartTotalSummary from '../components/CartTotalSummary';
+import Image from 'next/image';
 
 export default function Cart() {
   const products = useCartStore(state => state.products);
@@ -34,15 +35,16 @@ export default function Cart() {
               key={product.id}
               className='bg-white rounded-lg shadow flex flex-col overflow-hidden'
             >
-              {/* {product.imageExists && (
+              {product.imageUrl && (
                 <Image
-                  src={getProductImage(product.id, product.imageExtension ?? '')}
-                  width={300}
-                  height={200}
-                  style={{ objectFit: 'cover' }}
+                  src={product.imageUrl}
+                  width={500}
+                  height={500}
+                  className='w-full h-auto'
+                  sizes='100vw'
                   alt={`Picture of ${product.name}`}
                 />
-              )} */}
+              )}
               <div className='flex flex-col flex-grow p-4'>
                 <h2 className='text-lg font-semibold mb-1'>{product.name}</h2>
                 <p className='text-sm text-gray-600 flex-grow'>{product.description}</p>
