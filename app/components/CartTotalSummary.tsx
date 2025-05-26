@@ -1,3 +1,5 @@
+"use client";
+
 import { useCartStore } from '../stores/cartStore/useCartStore';
 
 interface Product {
