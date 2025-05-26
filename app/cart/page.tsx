@@ -3,7 +3,7 @@
 import { useCartStore } from '../stores/cartStore/useCartStore';
 import { Typography, Paper } from '@mui/material';
 import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
-import Image from 'next/image';
+// import Image from 'next/image';
 // import { getProductImage } from '../products/product-image';
 import CartTotalSummary from '../components/CartTotalSummary';
 
