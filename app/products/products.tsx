@@ -7,4 +7,5 @@ export default async function Products() {
   console.log('Products:', products);
 
   // return <ProductsGrid products={products} />;
+  return <>test</>
 }
