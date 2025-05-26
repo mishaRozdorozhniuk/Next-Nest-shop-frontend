@@ -1,11 +1,11 @@
 'use client';
 
-import Image from 'next/image';
+// import Image from 'next/image';
 // import { API_URL } from '../common/constants/api';
-import DeleteProduct from './create-product/delete-product';
+// import DeleteProduct from './create-product/delete-product';
 // import { getProductImage } from './product-image';
-import { useRouter } from 'next/navigation';
-import { CartProductItem, useCartStore } from '../stores/cartStore/useCartStore';
+// import { useRouter } from 'next/navigation';
+// import { CartProductItem, useCartStore } from '../stores/cartStore/useCartStore';
 
 interface IProduct {
   id: number;
@@ -21,28 +21,29 @@ interface ProductProps {
   product: IProduct;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function Product({ product }: ProductProps) {
-  const router = useRouter();
-  const products = useCartStore(state => state.products);
-  const addProductToCart = useCartStore(state => state.addProductToCart);
+  // const router = useRouter();
+  // const products = useCartStore(state => state.products);
+  // const addProductToCart = useCartStore(state => state.addProductToCart);
 
-  const isInCart = products.some(p => p.id === product.id);
+  // const isInCart = products.some(p => p.id === product.id);
 
-  const handleAddProductToCart = (productP: CartProductItem) => {
-    if (isInCart) return;
-    addProductToCart(productP);
-  };
+  // const handleAddProductToCart = (productP: CartProductItem) => {
+  //   if (isInCart) return;
+  //   addProductToCart(productP);
+  // };
 
-  if (!product) return <div>Loading...</div>;
+  // if (!product) return <div>Loading...</div>;
 
   return (
     <div
-      onClick={() => router.push(`/products/${product.id}`)}
-      className={`relative flex cursor-pointer flex-col overflow-hidden rounded-lg shadow-lg
-        transition-all duration-300 bg-white hover:shadow-xl
-        ${isInCart ? 'border-2 border-green-400 bg-green-50' : ''}`}
+    // onClick={() => router.push(`/products/${product.id}`)}
+    // className={`relative flex cursor-pointer flex-col overflow-hidden rounded-lg shadow-lg
+    //   transition-all duration-300 bg-white hover:shadow-xl
+    //   ${isInCart ? 'border-2 border-green-400 bg-green-50' : ''}`}
     >
-      {isInCart && (
+      {/* {isInCart && (
         <span className='absolute top-1 right-1 bg-green-500 text-white text-xs px-2 py-1 rounded-md shadow'>
           In Cart
         </span>
@@ -94,7 +95,7 @@ export default function Product({ product }: ProductProps) {
           {isInCart ? 'Already in Cart' : 'Add to Cart'}
         </button>
         <DeleteProduct productId={product.id} />
-      </div>
+      </div> */}
     </div>
   );
 }
