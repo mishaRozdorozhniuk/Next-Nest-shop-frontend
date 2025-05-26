@@ -1,5 +1,6 @@
+
 export default interface Product {
-  imageUrl: string | StaticImport;
+  imageUrl: string;
   id: number;
   name: string;
   description: string;
