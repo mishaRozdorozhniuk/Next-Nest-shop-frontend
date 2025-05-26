@@ -2,8 +2,8 @@ import { NextRequest } from 'next/server';
 import authenticated from './app/auth/actions/authenticated';
 import { onAuthenticated } from './app/common/constants/routes';
 
-export function middleware(req: NextRequest) {
-  const isAuth = authenticated();
+export async function middleware(req: NextRequest) {
+  const isAuth = await authenticated();
 
   console.log('Middleware: isAuth', isAuth);
 
