@@ -2,39 +2,39 @@
 
 import Product from './product';
 import IProduct from './interfaces/product.interface';
-import { useEffect } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { API_URL } from '../common/constants/api';
-import revalidateProducts from './actions/revalidate-products';
-import getAuthentication from '../auth/actions/get-authentication';
+// import { useEffect } from 'react';
+// import { io, Socket } from 'socket.io-client';
+// import { API_URL } from '../common/constants/api';
+// import revalidateProducts from './actions/revalidate-products';
+// import getAuthentication from '../auth/actions/get-authentication';
 
 interface ProductGridProps {
   products: IProduct[];
 }
 
 export default function ProductsGrid({ products }: ProductGridProps) {
-  useEffect(() => {
-    let socket: Socket;
+  // useEffect(() => {
+  //   let socket: Socket;
 
-    const createSocket = async () => {
-      socket = io(API_URL!, {
-        auth: {
-          Authentication: await getAuthentication(),
-        },
-        transports: ['websocket'],
-      });
+  //   const createSocket = async () => {
+  //     socket = io(API_URL!, {
+  //       auth: {
+  //         Authentication: await getAuthentication(),
+  //       },
+  //       transports: ['websocket'],
+  //     });
 
-      socket.on('productUpdated', () => {
-        revalidateProducts();
-      });
-    };
+  //     socket.on('productUpdated', () => {
+  //       revalidateProducts();
+  //     });
+  //   };
 
-    createSocket();
+  //   createSocket();
 
-    return () => {
-      socket?.disconnect();
-    };
-  }, []);
+  //   return () => {
+  //     socket?.disconnect();
+  //   };
+  // }, []);
 
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
