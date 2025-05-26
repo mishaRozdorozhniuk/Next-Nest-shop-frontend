@@ -28,7 +28,7 @@ export default function CartTotalSummary({ products }: CartTotalSummaryProps) {
 
       <hr className='border-gray-300 mb-4' />
 
-      {products.map(product => (
+      {products?.map(product => (
         <div key={product.id} className='flex justify-between text-sm text-black mb-2'>
           <span>{product.name}</span>
           <span>${product.price.toFixed(2)}</span>
