@@ -1,57 +1,48 @@
 'use client';
 
-import IProduct from './interfaces/product.interface';
 import Product from './product';
-// import { useEffect } from 'react';
-// import { io, Socket } from 'socket.io-client';
-// import { API_URL } from '../common/constants/api';
-// import revalidateProducts from './actions/revalidate-products';
-// import getAuthentication from '../auth/actions/get-authentication';
+import IProduct from './interfaces/product.interface';
+import { useEffect } from 'react';
+import { io, Socket } from 'socket.io-client';
+import { API_URL } from '../common/constants/api';
+import revalidateProducts from './actions/revalidate-products';
+import getAuthentication from '../auth/actions/get-authentication';
 
 interface ProductGridProps {
   products: IProduct[];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function ProductsGrid({ products }: ProductGridProps) {
+  useEffect(() => {
+    let socket: Socket;
 
-  console.log(products);
-  // useEffect(() => {
-  //   let socket: Socket;
+    const createSocket = async () => {
+      socket = io(API_URL!, {
+        auth: {
+          Authentication: await getAuthentication(),
+        },
+        transports: ['websocket'],
+      });
 
-  //   const createSocket = async () => {
-  //     socket = io(API_URL!, {
-  //       auth: {
-  //         Authentication: await getAuthentication(),
-  //       },
-  //       transports: ['websocket'],
-  //     });
+      socket.on('productUpdated', () => {
+        revalidateProducts();
+      });
+    };
 
-  //     socket.on('productUpdated', () => {
-  //       revalidateProducts();
-  //     });
-  //   };
+    createSocket();
 
-  //   createSocket();
-
-  //   return () => {
-  //     socket?.disconnect();
-  //   };
-  // }, []);
-
-  if (!Array.isArray(products)) {
-    return <div>Something went wrong: products is not an array</div>;
-  }
-
+    return () => {
+      socket?.disconnect();
+    };
+  }, []);
 
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
-      {Array.isArray(products) &&
-        products.map(product => (
-          <div key={product.id} className='h-full'>
-            <Product product={product} />
-          </div>
-        ))}
+      {products?.map(product => (
+        <div key={product.id} className='h-full'>
+          <Product product={product} />
+        </div>
+      ))}
     </div>
   );
 }
