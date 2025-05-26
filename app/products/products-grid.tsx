@@ -1,7 +1,7 @@
 'use client';
 
-// import Product from './product';
 import IProduct from './interfaces/product.interface';
+import Product from './product';
 // import { useEffect } from 'react';
 // import { io, Socket } from 'socket.io-client';
 // import { API_URL } from '../common/constants/api';
@@ -37,13 +37,19 @@ export default function ProductsGrid({ products }: ProductGridProps) {
   //   };
   // }, []);
 
+  if (!Array.isArray(products)) {
+    return <div>Something went wrong: products is not an array</div>;
+  }
+
+
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
-      {/* {products?.map(product => (
-        <div key={product.id} className='h-full'>
-          <Product product={product} />
-        </div>
-      ))} */}
+      {Array.isArray(products) &&
+        products.map(product => (
+          <div key={product.id} className='h-full'>
+            <Product product={product} />
+          </div>
+        ))}
     </div>
   );
 }
