@@ -2,11 +2,10 @@ import { NextRequest } from 'next/server';
 import authenticated from './app/auth/actions/authenticated';
 import { onAuthenticated } from './app/common/constants/routes';
 
-export function middleware(req: NextRequest) {
-  if (
-    !authenticated() &&
-    !onAuthenticated.some(route => req.nextUrl.pathname.startsWith(route.path))
-  ) {
+export async function middleware(req: NextRequest) {
+  const isAuth = await authenticated();
+
+  if (!isAuth && !onAuthenticated.some(route => req.nextUrl.pathname.startsWith(route.path))) {
     return Response.redirect(new URL('/auth/login', req.url));
   }
 }
