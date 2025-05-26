@@ -14,6 +14,8 @@ interface ProductGridProps {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function ProductsGrid({ products }: ProductGridProps) {
+
+  console.log(products);
   // useEffect(() => {
   //   let socket: Socket;
 
