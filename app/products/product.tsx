@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { API_URL } from '../common/constants/api';
 import DeleteProduct from './create-product/delete-product';
-import { getProductImage } from './product-image';
+// import { getProductImage } from './product-image';
 import { useRouter } from 'next/navigation';
 import { CartProductItem, useCartStore } from '../stores/cartStore/useCartStore';
 
@@ -50,7 +50,7 @@ export default function Product({ product }: ProductProps) {
 
       <div className='p-6 flex flex-col flex-grow'>
         <h2 className='text-xl font-bold text-gray-800 mb-2'>{product.name}</h2>
-        {product.imageExists && API_URL && (
+        {/* {product.imageExists && API_URL && (
           <Image
             src={getProductImage(product.id, product.imageExtension ?? '')}
             width={500}
@@ -59,7 +59,7 @@ export default function Product({ product }: ProductProps) {
             sizes='100vw'
             alt={`Picture of ${product.name}`}
           />
-        )}
+        )} */}
         <p className='text-gray-600 mb-4 flex-grow'>{product.description}</p>
         <div className='flex items-center justify-between'>
           <span className='text-xl font-bold text-indigo-600'>${product.price.toFixed(2)}</span>

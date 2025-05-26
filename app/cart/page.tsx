@@ -4,7 +4,7 @@ import { useCartStore } from '../stores/cartStore/useCartStore';
 import { Typography, Paper } from '@mui/material';
 import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import Image from 'next/image';
-import { getProductImage } from '../products/product-image';
+// import { getProductImage } from '../products/product-image';
 import CartTotalSummary from '../components/CartTotalSummary';
 
 export default function Cart() {
@@ -34,7 +34,7 @@ export default function Cart() {
               key={product.id}
               className='bg-white rounded-lg shadow flex flex-col overflow-hidden'
             >
-              {product.imageExists && (
+              {/* {product.imageExists && (
                 <Image
                   src={getProductImage(product.id, product.imageExtension ?? '')}
                   width={300}
@@ -42,7 +42,7 @@ export default function Cart() {
                   style={{ objectFit: 'cover' }}
                   alt={`Picture of ${product.name}`}
                 />
-              )}
+              )} */}
               <div className='flex flex-col flex-grow p-4'>
                 <h2 className='text-lg font-semibold mb-1'>{product.name}</h2>
                 <p className='text-sm text-gray-600 flex-grow'>{product.description}</p>

@@ -1,7 +1,7 @@
-import Image from 'next/image';
+// import Image from 'next/image';
 import getProduct from './get-product';
 import { Stack, Typography } from '@mui/material';
-import { getProductImage } from '../product-image';
+// import { getProductImage } from '../product-image';
 import Checkout from '@/app/checkout/checkout';
 
 interface SingleProductProps {
@@ -21,14 +21,14 @@ export default async function SingleProduct({ params }: SingleProductProps) {
       </Typography>
       {product.imageExists && (
         <Stack spacing={2} sx={{ alignItems: 'center', textAlign: 'center' }}>
-          <Image
+          {/* <Image
             src={getProductImage(product.id, product.imageExtension)}
             alt={`Picture of ${product.name}`}
             width={400}
             height={400}
             className='rounded-md shadow-md'
             sizes='(max-width: 768px) 100vw, 50vw'
-          />
+          /> */}
           <Typography variant='body1' sx={{ color: 'text.secondary', maxWidth: '600px' }}>
             {product.description}
           </Typography>
