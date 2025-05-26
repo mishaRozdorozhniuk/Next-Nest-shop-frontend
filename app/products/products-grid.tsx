@@ -1,6 +1,6 @@
 'use client';
 
-import Product from './product';
+// import Product from './product';
 import IProduct from './interfaces/product.interface';
 // import { useEffect } from 'react';
 // import { io, Socket } from 'socket.io-client';
