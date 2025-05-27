@@ -39,8 +39,6 @@ export default function Header({ logout }: HeaderProps) {
 
   const pages = isAuthenticated ? routes : onAuthenticated;
 
-  console.log(pages);
-
   return (
     <AppBar position='static'>
       <Container maxWidth='xl'>
@@ -144,6 +142,7 @@ export default function Header({ logout }: HeaderProps) {
     </AppBar>
   );
 }
+// localStorage.removeItem('cart-storage');
 
 const Settings = ({ logout }: HeaderProps) => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -160,7 +159,7 @@ const Settings = ({ logout }: HeaderProps) => {
   const handleGoToCart = () => {
     router.push('/cart');
     handleCloseUserMenu();
-  }
+  };
 
   return (
     <Box sx={{ flexGrow: 0 }}>
@@ -189,15 +188,13 @@ const Settings = ({ logout }: HeaderProps) => {
           key={'logout'}
           onClick={async () => {
             await logout();
+
             handleCloseUserMenu();
           }}
         >
           <Typography sx={{ textAlign: 'center' }}>Logout</Typography>
         </MenuItem>
-        <MenuItem
-          key={'cart'}
-          onClick={handleGoToCart}
-        >
+        <MenuItem key={'cart'} onClick={handleGoToCart}>
           <Typography sx={{ textAlign: 'center' }}>Cart</Typography>
         </MenuItem>
       </Menu>
