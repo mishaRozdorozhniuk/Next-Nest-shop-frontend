@@ -1,4 +1,4 @@
-name: Frontend Deployment
+name: Frontend CI & Deploy
 
 on:
   push:
@@ -6,30 +6,41 @@ on:
       - main
 
 jobs:
-  deploy:
+  lint-and-build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🧾 Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: 🔧 Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 18
 
-      - name: 📦 Install dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: npm install
 
-      - name: 🧪 Run Linter
+      - name: Lint the project
         run: npm run lint
 
-      - name: 🛠️ Build the project
+      - name: Build the project
         run: npm run build
 
-      - name: 🚀 Deploy...
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          publish_branch: gh-pages
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          curl -X POST "https://api.vercel.com/v13/deployments" \
+          -H "Authorization: Bearer $VERCEL_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "name": "next-nest-shop-frontend",
+            "project": "'"$VERCEL_PROJECT_ID"'",
+            "gitSource": {
+              "type": "github",
+              "repoId": "'"${{ github.repository_id }}"'",
+              "ref": "'"${{ github.ref_name }}"'"
+            }
+          }'
