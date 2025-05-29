@@ -12,6 +12,7 @@ services:
       - .:/app
       - /app/node_modules
     restart: always
+    # unlessstopped
 
 volumes:
   pgdata:
