@@ -4,6 +4,7 @@ import { API_URL } from '@/app/common/constants/api';
 import { getErrorMessage } from '@/app/common/util/errors';
 import { jwtDecode } from 'jwt-decode';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { AUTHENTICATION_COOKIE } from '../auth-cookie';
 
 export default async function login(
@@ -28,7 +29,8 @@ export default async function login(
 
   await setAuthCookie(res);
 
-  return { success: true };
+  // Делаем редирект на сервере после установки кук
+  redirect('/');
 }
 
 const setAuthCookie = async (response: Response) => {
