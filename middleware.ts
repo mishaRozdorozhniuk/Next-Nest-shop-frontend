@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { onAuthenticated } from './app/common/constants/routes';
-import authenticated from './app/auth/actions/authenticated';
 
 export function middleware(req: NextRequest) {
-  const isAuth = authenticated()
+  const authCookie = req.cookies.get('Authentication')?.value;
+
+  const isAuth = !!authCookie;
 
   if (!isAuth && !onAuthenticated.some(route => req.nextUrl.pathname.startsWith(route.path))) {
     return NextResponse.redirect(new URL('/auth/login', req.url));

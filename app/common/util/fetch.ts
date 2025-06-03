@@ -1,67 +1,52 @@
 import { cookies } from 'next/headers';
-import { API_URL } from '../constants/api';
-import { getErrorMessage } from './errors';
+import { API_URL } from '@/app/common/constants/api';
 
-export const getHeaders = async () => {
+const getHeaders = async () => {
   const cookieStore = await cookies();
   return {
     Cookie: cookieStore.toString(),
   };
 };
 
-export const POST = async (url: string, body: FormData | object) => {
-  const bodyIsFormData = body instanceof FormData ? Object.fromEntries(body.entries()) : body;
+export const GET = async (url: string, tags?: string[]): Promise<unknown> => {
+  const res = await fetch(`${API_URL}/${url}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: await getHeaders(),
+    next: { tags },
+  });
 
-  // const formObject = Object.fromEntries(body.entries());
+  return res.json();
+};
+
+export const POST = async (url: string, body: FormData | object) => {
+  const bodyData = body instanceof FormData ? Object.fromEntries(body.entries()) : body;
 
   const res = await fetch(`${API_URL}/${url}`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(await getHeaders()),
-    },
-    body: JSON.stringify(bodyIsFormData),
+    credentials: 'include',
+    headers: await getHeaders(),
+    body: JSON.stringify(bodyData),
   });
 
-  const parsedRes = res.headers.get('Content-Length') === '0' ? {} : await res.json();
+  const data = res.headers.get('Content-Length') === '0' ? {} : await res.json();
 
-  if (!res.ok) {
-    return {
-      error: getErrorMessage(parsedRes),
-    };
-  }
-
-  return { error: '', data: parsedRes };
+  return {
+    error: '',
+    data,
+  };
 };
 
 export const DELETE = async (url: string) => {
   const res = await fetch(`${API_URL}/${url}`, {
     method: 'DELETE',
-    headers: {
-      ...(await getHeaders()),
-    },
+    headers: await getHeaders(),
   });
 
-  if (!res.ok) {
-    return {
-      error: getErrorMessage(await res.json()),
-    };
-  }
+  const data = res.headers.get('Content-Length') === '0' ? {} : await res.json();
 
-  return { error: '' };
-};
-
-export const GET = async <T>(url: string, tags?: string[], params?: URLSearchParams) => {
-  const urlPath = params ? `${API_URL}/${url}?${params.toString()}` : `${API_URL}/${url}`;
-  const res = await fetch(urlPath, {
-    method: 'GET',
-    headers: {
-      ...(await getHeaders()),
-    },
-    next: {
-      tags,
-    },
-  });
-
-  return res.json() as T;
+  return {
+    error: '',
+    data,
+  };
 };

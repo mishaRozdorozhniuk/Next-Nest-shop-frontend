@@ -1,9 +1,6 @@
 'use client';
 
-// import Image from 'next/image';
-// import { API_URL } from '../common/constants/api';
 import DeleteProduct from './create-product/delete-product';
-// import { getProductImage } from './product-image';
 import { useRouter } from 'next/navigation';
 import { CartProductItem, useCartStore } from '../stores/cartStore/useCartStore';
 import Image from 'next/image';
