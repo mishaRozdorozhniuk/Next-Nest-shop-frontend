@@ -6,7 +6,6 @@ import authenticated from './auth/actions/authenticated';
 import Providers from './providers/Provider';
 import Header from './header/Header';
 import logout from './auth/logout';
-import TokenRefreshWrapper from './TockenRefresh';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,13 +24,11 @@ export default async function RootLayout({
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <TokenRefreshWrapper>
-          <Providers authenticated={isAuthenticated}>
-            <CssBaseline />
-            <Header logout={logout} />
-            <Container className={isAuthenticated ? 'mt-10' : ''}>{children}</Container>
-          </Providers>
-        </TokenRefreshWrapper>
+        <Providers authenticated={isAuthenticated}>
+          <CssBaseline />
+          <Header logout={logout} />
+          <Container className={isAuthenticated ? 'mt-10' : ''}>{children}</Container>
+        </Providers>
       </body>
     </html>
   );

@@ -9,7 +9,6 @@ export async function refreshToken() {
 
   const res = await fetch(`${API_URL}/auth/refresh`, {
     method: 'POST',
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       Cookie: cookieHeader,

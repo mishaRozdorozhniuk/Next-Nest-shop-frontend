@@ -27,8 +27,6 @@ export default function Header({ logout }: HeaderProps) {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const isAuthenticated = React.useContext(AuthContext);
 
-  console.log(isAuthenticated, "isAuthenticated Header")
-
   const router = useRouter();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {

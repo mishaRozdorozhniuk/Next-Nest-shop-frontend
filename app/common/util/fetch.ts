@@ -8,15 +8,14 @@ const getHeaders = async () => {
   };
 };
 
-export const GET = async (url: string, tags?: string[]): Promise<unknown> => {
-  const res = await fetch(`${API_URL}/${url}`, {
-    method: 'GET',
-    credentials: 'include',
+export const GET = async <T>(path: string, tags?: string[], params?: URLSearchParams) => {
+  const url = params ? `${API_URL}/${path}?` + params : `${API_URL}/${path}`;
+  const res = await fetch(url, {
     headers: await getHeaders(),
     next: { tags },
   });
 
-  return res.json();
+  return res.json() as T;
 };
 
 export const POST = async (url: string, body: FormData | object) => {
