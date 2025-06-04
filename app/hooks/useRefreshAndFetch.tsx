@@ -75,7 +75,7 @@ const removeRefreshLock = () => {
   }
 };
 
-const TOKEN_CHECK_CACHE_TIME = 2 * 60 * 1000; 
+const TOKEN_CHECK_CACHE_TIME = 2 * 60 * 1000;
 
 export function useRefreshAndFetch<T>(fetchData: FetchDataFn<T>) {
   const [tokenRefreshed, setTokenRefreshed] = useState(false);
@@ -119,9 +119,7 @@ export function useRefreshAndFetch<T>(fetchData: FetchDataFn<T>) {
           setTokenState(newTokenState);
 
           if (expired) {
-
             if (getRefreshLock()) {
-
               let attempts = 0;
               while (getRefreshLock() && attempts < 20) {
                 await new Promise(resolve => setTimeout(resolve, 500));
@@ -151,7 +149,7 @@ export function useRefreshAndFetch<T>(fetchData: FetchDataFn<T>) {
               }
             }
           } else {
-            console.log('✅ [Token Check] Token is valid, skipping refresh');
+            console.log('Token is valid, skipping refresh');
           }
         }
 
