@@ -5,6 +5,7 @@ import { getHeaders, POST } from '../../common/util/fetch';
 import { API_URL } from '@/app/common/constants/api';
 
 export default async function createProduct(formData: FormData) {
+
   const response = await POST('products', formData);
 
   const productImage = formData.get('image') as File;

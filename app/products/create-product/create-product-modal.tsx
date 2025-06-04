@@ -2,9 +2,9 @@
 
 import { Box, Button, Modal, Stack, TextField, Typography } from '@mui/material';
 import { CSSProperties, useState } from 'react';
-import { FormResponse } from '../../common/interfaces/form-response.interface';
 import createProduct from '../actions/create-products';
 import { CloudUpload } from '@mui/icons-material';
+import { useFormStatus } from 'react-dom';
 
 const styles: CSSProperties = {
   position: 'absolute',
@@ -35,67 +35,74 @@ interface CreateProductModalProps {
   handleClose: () => void;
 }
 
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type='submit' variant='contained' fullWidth disabled={pending}>
+      {pending ? 'Creating...' : 'Submit'}
+    </Button>
+  );
+}
+
 export default function CreateProductModal({ open, handleClose }: CreateProductModalProps) {
-  const [response, setResponse] = useState<FormResponse>();
-  const [fileName, setFileName] = useState<string>('');
+  const [fileName, setFileName] = useState('');
+  const [error, setError] = useState('');
 
   const onClose = () => {
-    setResponse(undefined);
     handleClose();
     setFileName('');
+    setError('');
+  };
+
+  const handleAction = async (formData: FormData) => {
+    try {
+      const response = await createProduct(formData);
+
+      if (response.error) {
+        setError(response.error);
+      } else {
+        onClose();
+      }
+    } catch (err) {
+      setError('An error occurred while creating the product');
+      console.error(err);
+    }
   };
 
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={styles}>
-        <form
-          className='w-full max-w-xs'
-          action={async formData => {
-            const response = await createProduct(formData);
-            setResponse(response);
-            if (!response.error) {
-              onClose();
-            }
-          }}
-        >
+        <Typography variant='h6' component='h2' gutterBottom>
+          Create Product
+        </Typography>
+
+        <form action={handleAction}>
           <Stack spacing={2}>
-            <TextField
-              name='name'
-              label='Name'
-              variant='outlined'
-              required
-              error={!!response?.error}
-              helperText={response?.error}
-            />
-            <TextField
-              name='description'
-              label='Description'
-              variant='outlined'
-              required
-              error={!!response?.error}
-              helperText={response?.error}
-            />
-            <TextField
-              name='price'
-              label='Price'
-              variant='outlined'
-              required
-              error={!!response?.error}
-              helperText={response?.error}
-            />
-            <Button component='label' variant='outlined' startIcon={<CloudUpload />}>
-              Upload File
-              <input
-                type='file'
-                name='image'
-                style={styleInputStyles}
-                onChange={e => e.target.files && setFileName(e.target.files[0].name)}
-              />
-            </Button>
-            <Typography>{fileName ? `Selected file: ${fileName}` : 'No file selected'}</Typography>
-            <Button type='submit' variant='contained'>
-              Submit
-            </Button>
+            <TextField name='name' label='Product Name' fullWidth required />
+
+            <TextField name='description' label='Description' multiline rows={3} fullWidth />
+
+            <TextField name='price' label='Price' type='number' fullWidth required />
+
+            <Box>
+              <Button component='label' variant='outlined' startIcon={<CloudUpload />} fullWidth>
+                Upload File
+                <input
+                  name='image'
+                  type='file'
+                  style={styleInputStyles}
+                  onChange={e => e.target.files && setFileName(e.target.files[0].name)}
+                />
+              </Button>
+              <Typography variant='body2' sx={{ mt: 1 }}>
+                {fileName ? `Selected file: ${fileName}` : 'No file selected'}
+              </Typography>
+            </Box>
+
+            <SubmitButton />
+
+            {error && <Typography color='error'>{error}</Typography>}
           </Stack>
         </form>
       </Box>
