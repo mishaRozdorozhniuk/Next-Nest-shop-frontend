@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { refreshToken } from '../auth/refresh/refresh';
 import { checkTokenExpiry } from '../auth/actions/checkToken';
+import { useAuthStore } from '../stores/authStore/useCartStore';
+import getUserDataFromToken from '../auth/actions/getTokenFromServer';
 
 const TOKEN_STATE_KEY = 'tokenState';
 const REFRESH_LOCK_KEY = 'refreshLock';
@@ -70,6 +71,7 @@ const TOKEN_CHECK_CACHE_TIME = 2 * 60 * 1000;
 
 export default function ClientWrapper({ children }: { children: React.ReactNode }) {
   const isInitializedRef = useRef(false);
+  const { setUserData, setTokenRefreshed } = useAuthStore();
 
   useEffect(() => {
     if (isInitializedRef.current) return;
@@ -79,12 +81,23 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
       try {
         const now = Date.now();
         const tokenState = getTokenState();
+
+        const userDataFromHttpOnlyCookie = await getUserDataFromToken();
+
+        if (userDataFromHttpOnlyCookie) {
+          setUserData(userDataFromHttpOnlyCookie);
+        } else {
+          setUserData(null);
+        }
+
+        console.log('User Data from HTTP-only cookie:', userDataFromHttpOnlyCookie);
+
         const timeSinceLastCheck = now - tokenState.lastCheck;
 
         let shouldCheckToken = true;
 
         if (tokenState.isValid && timeSinceLastCheck < TOKEN_CHECK_CACHE_TIME) {
-          if (tokenState.expiresAt && tokenState.expiresAt > now + 60000) {
+          if (tokenState.expiresAt && tokenState.expiresAt > now + 60 * 1000) {
             shouldCheckToken = false;
           }
         }
@@ -106,10 +119,18 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
                 await new Promise(resolve => setTimeout(resolve, 500));
                 attempts++;
               }
+              const updatedUserData = await getUserDataFromToken();
+              if (updatedUserData) {
+                setUserData(updatedUserData);
+              }
             } else {
               setRefreshLock();
               try {
-                await refreshToken();
+                setTokenRefreshed(true);
+                const newUserData = await getUserDataFromToken();
+                if (newUserData) {
+                  setUserData(newUserData);
+                }
                 setTokenState({
                   lastCheck: Date.now(),
                   isValid: true,
@@ -122,12 +143,13 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
           }
         }
       } catch (error) {
-        console.error('Token refresh failed:', error);
+        console.error('Помилка під час перевірки/оновлення токена:', error);
+        setUserData(null);
       }
     };
 
     ensureValidToken();
-  }, []);
+  }, [setUserData, setTokenRefreshed]);
 
   return <>{children}</>;
 }

@@ -5,14 +5,16 @@ interface User {
   id: number;
   email: string;
   name?: string;
+  roles: string[];
+  permissions: string[];
 }
 
 interface AuthStoreState {
   user: User | null;
   tokenRefreshed: boolean;
-  setUser: (user: User | null) => void;
   setTokenRefreshed: (value: boolean) => void;
   logout: () => void;
+  setUserData: (user: User | null) => void;
 }
 
 export const useAuthStore = create<AuthStoreState>()(
@@ -20,9 +22,19 @@ export const useAuthStore = create<AuthStoreState>()(
     set => ({
       user: null,
       tokenRefreshed: false,
-      setUser: user => set({ user }),
       setTokenRefreshed: value => set({ tokenRefreshed: value }),
       logout: () => set({ user: null, tokenRefreshed: false }),
+      setUserData: (user: User | null) =>
+        set({
+          user: user
+            ? {
+                ...user,
+                name: user.name || '',
+                roles: user.roles || [],
+                permissions: user.permissions || [],
+              }
+            : null,
+        }),
     }),
     {
       name: 'auth-storage',
