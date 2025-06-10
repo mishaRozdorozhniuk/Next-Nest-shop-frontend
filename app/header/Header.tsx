@@ -18,9 +18,19 @@ import { AuthContext } from '../auth/auth-context.context';
 import Link from 'next/link';
 import { onAuthenticated, routes } from '../common/constants/routes';
 import { useRouter } from 'next/navigation';
+import { useGetDataFromLocalStorageByKey } from '../hooks/useGetDataFromLocalStorageByKey';
 
 interface HeaderProps {
   logout: () => Promise<void>;
+}
+
+interface IAuthPermissions {
+  state: {
+    user: {
+      roles: string[];
+      permissions: string[];
+    };
+  };
 }
 
 export default function Header({ logout }: HeaderProps) {
@@ -148,6 +158,8 @@ const Settings = ({ logout }: HeaderProps) => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const router = useRouter();
 
+  const authUserPermissions = useGetDataFromLocalStorageByKey('auth-storage');
+
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
@@ -197,6 +209,24 @@ const Settings = ({ logout }: HeaderProps) => {
         <MenuItem key={'cart'} onClick={handleGoToCart}>
           <Typography sx={{ textAlign: 'center' }}>Cart</Typography>
         </MenuItem>
+        {(authUserPermissions &&
+          typeof authUserPermissions === 'object' &&
+          authUserPermissions !== null &&
+          'state' in authUserPermissions &&
+          Array.isArray((authUserPermissions as IAuthPermissions).state?.user?.roles) &&
+          (authUserPermissions as IAuthPermissions).state.user.roles.some(
+            (role: string) => role.toLowerCase() === 'admin',
+          )) ? (
+            <MenuItem
+              key={'admin'}
+              onClick={() => {
+                router.push('/admin');
+                handleCloseUserMenu();
+              }}
+            >
+              <Typography sx={{ textAlign: 'center' }}>Admin</Typography>
+            </MenuItem>
+          ) : null}
       </Menu>
     </Box>
   );

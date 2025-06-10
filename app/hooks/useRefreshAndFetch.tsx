@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { checkTokenExpiry } from '../auth/actions/checkToken';
-import { useAuthStore } from '../stores/authStore/useCartStore';
+import { useAuthStore } from '../stores/authStore/useAuthStore';
 import getUserDataFromToken from '../auth/actions/getTokenFromServer';
 
 const TOKEN_STATE_KEY = 'tokenState';
