@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { checkTokenExpiry } from '../auth/actions/checkToken';
 import { useAuthStore } from '../stores/authStore/useAuthStore';
 import getUserDataFromToken from '../auth/actions/getTokenFromServer';
+import { refreshToken } from '../auth/refresh/refresh';
 
 const TOKEN_STATE_KEY = 'tokenState';
 const REFRESH_LOCK_KEY = 'refreshLock';
@@ -67,30 +68,37 @@ const removeRefreshLock = () => {
   }
 };
 
-const TOKEN_CHECK_CACHE_TIME = 2 * 60 * 1000;
+const TOKEN_CHECK_CACHE_TIME = 15 * 1000;
+
+const CHECK_INTERVAL = 10 * 1000;
 
 export default function ClientWrapper({ children }: { children: React.ReactNode }) {
   const isInitializedRef = useRef(false);
   const { setUserData, setTokenRefreshed } = useAuthStore();
 
   useEffect(() => {
-    if (isInitializedRef.current) return;
-    isInitializedRef.current = true;
+    if (!isInitializedRef.current) {
+      isInitializedRef.current = true;
+      ensureValidToken();
+    }
 
-    const ensureValidToken = async () => {
+    const intervalId = setInterval(() => {
+      ensureValidToken();
+    }, CHECK_INTERVAL);
+
+    return () => clearInterval(intervalId);
+
+    async function ensureValidToken() {
       try {
         const now = Date.now();
         const tokenState = getTokenState();
 
         const userDataFromHttpOnlyCookie = await getUserDataFromToken();
-
         if (userDataFromHttpOnlyCookie) {
           setUserData(userDataFromHttpOnlyCookie);
         } else {
           setUserData(null);
         }
-
-        console.log('User Data from HTTP-only cookie:', userDataFromHttpOnlyCookie);
 
         const timeSinceLastCheck = now - tokenState.lastCheck;
 
@@ -107,7 +115,8 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
           const newTokenState: TokenState = {
             lastCheck: now,
             isValid: !expired,
-            expiresAt: expiresIn ? now + expiresIn * 1000 : undefined,
+            expiresAt:
+              expiresIn !== undefined && expiresIn > 0 ? now + expiresIn * 1000 : undefined,
           };
 
           setTokenState(newTokenState);
@@ -126,16 +135,26 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
             } else {
               setRefreshLock();
               try {
-                setTokenRefreshed(true);
-                const newUserData = await getUserDataFromToken();
-                if (newUserData) {
-                  setUserData(newUserData);
+                const refreshed = await refreshToken();
+                console.log(refreshed);
+                if (refreshed) {
+                  setTokenRefreshed(true);
+                  const newUserData = await getUserDataFromToken();
+                  if (newUserData) {
+                    setUserData(newUserData);
+                  }
+                  setTokenState({
+                    lastCheck: Date.now(),
+                    isValid: true,
+                    expiresAt: Date.now() + 3 * 60 * 1000,
+                  });
+                } else {
+                  console.warn('Token refresh failed, setting user data to null.');
+                  setUserData(null);
                 }
-                setTokenState({
-                  lastCheck: Date.now(),
-                  isValid: true,
-                  expiresAt: Date.now() + 3 * 60 * 1000,
-                });
+              } catch (error) {
+                console.error('Помилка під час спроби оновити токен:', error);
+                setUserData(null);
               } finally {
                 removeRefreshLock();
               }
@@ -143,13 +162,11 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
           }
         }
       } catch (error) {
-        console.error('Помилка під час перевірки/оновлення токена:', error);
+        console.error('Загальна помилка під час перевірки/оновлення токена:', error);
         setUserData(null);
       }
-    };
+    }
 
-    ensureValidToken();
   }, [setUserData, setTokenRefreshed]);
-
   return <>{children}</>;
 }

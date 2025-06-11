@@ -3,10 +3,14 @@ import { onAuthenticated } from './app/common/constants/routes';
 
 export function middleware(req: NextRequest) {
   const authCookie = req.cookies.get('Authentication')?.value;
+  const refreshCookie = req.cookies.get('Refresh')?.value;
 
-  const isAuth = !!authCookie;
+  const isEffectivelyAuthenticated = !!authCookie || !!refreshCookie;
 
-  if (!isAuth && !onAuthenticated.some(route => req.nextUrl.pathname.startsWith(route.path))) {
+  if (
+    !isEffectivelyAuthenticated &&
+    !onAuthenticated.some(route => req.nextUrl.pathname.startsWith(route.path))
+  ) {
     return NextResponse.redirect(new URL('/auth/login', req.url));
   }
 
@@ -14,11 +18,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-    '/auth/:path*',
-    '/cart/:path*',
-    '/checkout/:path*',
-    '/products/:path*',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };
